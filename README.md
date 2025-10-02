@@ -32,7 +32,7 @@ The purpose of this assignment was to practice the fundamentals of static websit
 
 ---
 
-## Assignment 2 – Interactive Kanban Board
+## Assignment 2
 
 In this assignment, I extended the work from Assignment 1 by designing and developing an **interactive Kanban Board**.  
 The application is responsive, mobile-friendly, and implemented using **pure HTML, CSS, and JavaScript**, with **Google Charts** for visualization.
@@ -70,3 +70,57 @@ The goal of this assignment was to demonstrate:
 4. Add, move, edit, and delete tasks directly on the Kanban Board.  
 
 ---
+
+## Assignment 3
+
+In this assignment, I extended the Kanban system from Assignment 2 into a full **Agile Scrum Project Management System**.  
+The application is responsive, works in Hebrew, and integrates with a database (**ASPM**).  
+
+### System Description
+The system supports multiple user roles, each with specific permissions and views:
+- **Company Manager (user.uid: 15):** Can add, update, and delete products; view reports.  
+- **Product Owner (user.uid: 11, 12):** Can manage products, update product details, delete products, and update Kanban boards.  
+- **Scrum Master (user.uid: 13, 14):** Can assign team members to products, transfer members between products, remove team members, and update Kanban boards.  
+- **Team Member:** Can update personal details and update their own Kanban board.  
+
+### Features Implemented
+- **User Management:**  
+  - Login and registration by role.  
+  - Add new users, update details, delete users.  
+  - Display all users in tables with filtering options.  
+
+- **Product Management:**  
+  - Add new products, update product details, delete products.  
+  - Associate employees with products.  
+  - Show reports of employees per product.  
+
+- **Kanban Integration:**  
+  - Each role has access to a Kanban board.  
+  - Boards can be created, updated, and saved directly into the database.  
+
+- **Reports and Data Display:**  
+  - Use of `<table>` to display results after every CRUD operation.  
+  - Filtering with `<select>` or tables depending on context.  
+  - Multi-table reports combining products, users, and assignments.  
+
+- **UI and Navigation:**  
+  - Responsive design for mobile screens (350–500px).  
+  - Each page shows:  
+    - Logged-in user name.  
+    - Local menu (based on the active role).  
+    - Main menu (About, Help, Logout).  
+
+### Technologies Used
+- **HTML, CSS, JavaScript**  
+- **AJAX, iFrame, Include, Forms**  
+- **ASPM Database** (local, no external modules)  
+
+### Goal
+The purpose of this assignment was to design and implement a complete **information system for Agile Scrum project management**, integrating database operations, multiple user roles, and Kanban functionality within a responsive front-end interface.  
+
+### How to Run
+1. Download or clone the repository.  
+2. Ensure the provided ASPM database is running locally.  
+3. Open the project in a browser that supports the local server setup.  
+4. Login with one of the user roles to access role-specific features.  
+5. Use the menus to navigate and perform operations (user management, product management, Kanban updates).  
