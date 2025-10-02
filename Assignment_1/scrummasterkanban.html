@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>לוח קנבן - סקראם מאסטר</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+   	
+     body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-image: url('background.jpg');   background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+    table.top-bar {
+      width: 100%;
+      height: 70px;
+      background-color: #266C99;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      direction: rtl;
+    }
+
+    table.top-bar td {
+      color: #FFFFFF;
+      font-size: x-large;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+      color: #266C99;
+      margin-top: 30px;
+    }
+
+    .kanban-board {
+    justify-content: center;
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+
+    .kanban-column {
+      flex: 0 0 220px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .kanban-column h2 {
+      font-size: 18px;
+      margin: 10px 0;
+      text-align: center;
+      padding: 8px;
+      border-radius: 6px;
+      color: white;
+    }
+
+    .new h2 { background-color: #777; }
+    .todo h2 { background-color: #FF9800; }
+    .doing h2 { background-color: #03A9F4; }
+    .review h2 { background-color: #FFC107; }
+    .done h2 { background-color: #4CAF50; }
+
+    .task-card {
+      background: white;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .task-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .assigned {
+      font-size: 12px;
+      color: #555;
+      margin-top: 8px;
+      text-align: left;
+    }
+.fixed-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  
+  body.has-toolbar {
+  padding-top: 70px;
+}
+.button-group {
+  display: flex;
+  justify-content: right;
+  gap: 40px;
+  margin-top: 40px;margin-right: 2cm;
+}
+
+.button-group button {
+  width:auto; 
+  font-size: 17px;
+  padding: 12px 28px;
+  background-color: #266C99;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  text-align:center;
+}
+
+.button-group button:hover {
+  background-color: #1f5a80;
+}
+   
+    </style>
+</head>
+
+<body class="has-toolbar">
+
+<div class="fixed-toolbar">
+  <table style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 90px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="ScrumMaster.html" style="color: #FFFFFF; text-decoration: none;">דף הבית</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">אחורה</a>
+      </td>
+	<td style="width: 180px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+      <a href="login.html" style="color: #FFFFFF; text-decoration: none;">התנתקות</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	  גל רביד 318732328</td>
+    </tr>
+  </table>
+</div>
+
+  <h1>לוח קנבן - Scrum Master</h1>
+  <p style="text-align:center; font-size: 18px; margin-top: -10px;">
+  משימות שהסקראם מאסטר מקצה לחברי הצוות השונים
+</p>
+
+  <div class="kanban-board">
+    <div class="kanban-column new">
+      <h2><span lang="en-us">משימות לחלוקה לעובדים</span></h2>
+      <div class="task-card"><div class="task-title">קביעת מועד סקרם יומי</div><div>תיאום מול כל חברי הצוות</div></div>
+      <div class="task-card"><div class="task-title">יצירת לוח משימות</div><div>הגדרת עמודות לפי סטטוסים</div></div>
+      <div class="task-card"><div class="task-title">בדיקת התקדמות sprint</div><div>סיכום מהיר מכולם</div></div>
+    </div>
+
+    <div class="kanban-column todo">
+      <h2><span lang="en-us">רועי</span></h2>
+      <div class="task-card"><div class="task-title">עדכון טבלת חברי צוות</div><div>הוספת חבר חדש</div></div>
+      <div class="task-card"><div class="task-title">מעקב אחר באגים פתוחים</div><div>הצלבת מידע עם dev team</div></div>
+      <div class="task-card"><div class="task-title">תיאום ישיבת Sprint</div><div>חיפוש זמן פנוי בלו״ז</div></div>
+    </div>
+
+    <div class="kanban-column doing">
+      <h2><span lang="en-us">דניה</span></h2>
+      <div class="task-card"><div class="task-title">תעדוף משימות</div><div>בהתאם לקושי והשפעה</div></div>
+      <div class="task-card"><div class="task-title">מעקב יומי</div><div>מענה על חסמים בצוות</div></div>
+      <div class="task-card"><div class="task-title">תזכורת פגישת Sprint</div><div>שליחה בצ׳אט קבוצתי</div></div>
+    </div>
+
+    <div class="kanban-column review">
+      <h2><span lang="en-us">עידו</span></h2>
+      <div class="task-card"><div class="task-title">בדיקת משימות שבוצעו</div><div>הצלבת דיווחים עם הקוד</div></div>
+      <div class="task-card"><div class="task-title">סיכום Sprint</div><div>מה עבד ומה לא</div></div>
+      <div class="task-card"><div class="task-title">הצעת שיפורים ל-next sprint</div><div>הפקת לקחים</div></div>
+    </div>
+
+    <div class="kanban-column done">
+      <h2><span lang="en-us">גל</span></h2>
+      <div class="task-card"><div class="task-title">בניית מסד נתונים לצוות</div><div>יצירת טבלת scrum_team</div></div>
+      <div class="task-card"><div class="task-title">כתיבת מסמך נהלים</div><div>הסברים לסדר עבודה</div></div>
+      <div class="task-card"><div class="task-title">הגדרת משימות פתיחה</div><div>לוח sprint ראשון</div></div>
+    </div>
+  </div>
+  <footer>
+    &copy; 2025 Taskly Team D2
+
+  </footer>
+
+</body>
+</html>

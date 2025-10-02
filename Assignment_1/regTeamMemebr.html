@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>הרשמה</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  table.top-bar {
+    width: 100%;
+    height: 70px;
+    background-color: #266C99;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    direction: rtl;
+  }
+
+  table.top-bar td {
+    color: #FFFFFF;
+    font-size: x-large;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  h1 {
+    color: #2c3e50;
+    margin-top: 40px;
+  }
+
+  form {
+    background-color: #ffffff;
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: right;
+  }
+
+  label {
+    display: block;
+    margin: 15px 0 5px;
+    font-size: 16px;
+  }
+
+  input[type=text],
+  input[type=email],
+  input[type=tel],
+  input[type=password],
+  select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  input[type=submit],
+  input[type=reset] {
+    background-color: #266C99;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  input[type=submit]:hover,
+  input[type=reset]:hover {
+    background-color: #1f5a80;
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .form-btn {
+    background-color: #266C99;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .form-btn:hover {
+    background-color: #1f5a80;
+  }
+
+  p {
+    font-size: 24pt;
+    border: 2px solid #266C99;
+    border-radius: 30px;
+    padding: 30px;
+    margin: 40px auto;
+    width: 15%;
+    background-color: transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+.fixed-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+
+  body.has-toolbar {
+  padding-top: 70px;
+}
+    </style>
+</head>
+
+<body class="has-toolbar">
+
+<div class="fixed-toolbar">
+  <table style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 90px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html" style="color: #FFFFFF; text-decoration: none;">דף הבית</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">אחורה</a>
+      </td>
+<td style="width: 180px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+      <a href="login.html" style="color: #FFFFFF; text-decoration: none;">התנתקות</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	  גל רביד 318732328</td>
+    </tr>
+  </table>
+</div>
+
+<p dir="rtl"><strong>הרשמה<span lang="en-us"> לחבר צוות</span></strong></p>
+
+<form id="registrationForm" method="post">
+
+  <label for="first_name">שם פרטי:</label>
+  <input type="text" id="first_name" name="first_name">
+
+  <label for="last_name">שם משפחה:</label>
+  <input type="text" id="last_name" name="last_name">
+
+  <label for="address">כתובת:</label>
+  <input type="text" id="address" name="address">
+
+  <label for="username">תפקיד:</label>
+  <input type="text" id="username" name="username">
+
+  <label for="comments">הערות:</label>
+  <input type="text" id="comments" name="comments">
+
+  <div class="button-row">
+    <a href="regsuccessTM.html" class="form-btn">הרשמה</a>
+    <input type="reset" value="ביטול" class="form-btn">
+  </div>
+
+</form>
+
+<footer dir="ltr">
+  &copy; 2025 Taskly Team D2
+</footer>
+
+</body>
+</html>

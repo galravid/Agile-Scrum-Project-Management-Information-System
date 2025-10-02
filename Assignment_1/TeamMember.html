@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>איש צוות דף הבית</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      direction: rtl;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    table.top-bar {
+      width: 100%;
+      height: 70px;
+      background-color: #266C99;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    table.top-bar td {
+      color: white;
+      font-size: x-large;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 30px;
+      color: #266C99;
+    }
+
+    .description, .screenshot-caption {
+      background-color: #ffffffcc;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 700px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .buttons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .form-btn {
+      background-color: #266C99;
+      color: white;
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-btn:hover {
+      background-color: #1f5a80;
+    }
+
+    .report-table {
+      margin: 40px auto;
+      width: 95%;
+      max-width: 1100px;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .report-table th {
+      background-color: #266C99;
+      color: white;
+    }
+
+    .report-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .fixed-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  
+  body.has-toolbar {
+  padding-top: 70px;
+}
+    
+    </style>
+</head>
+
+<body class="has-toolbar">
+
+<div class="fixed-toolbar">
+  <table style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 90px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html" style="color: #FFFFFF; text-decoration: none;">דף הבית</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">אחורה</a>
+      </td>
+		<td style="width: 180px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+      <a href="login.html" style="color: #FFFFFF; text-decoration: none;">התנתקות</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	  גל רביד 318732328</td>
+    </tr>
+  </table>
+</div>
+
+<h1>ברוך הבא לדף הבית של איש צוות</h1>
+
+<div class="description">
+    חבר צוות הוא מפתח פעיל בצוות הפיתוח, האחראי על ביצוע משימות שנבחרו 
+	לספרינט. הוא משתתף בפגישות יומיות, משתף פעולה עם שאר חברי הצוות, ופועל 
+	להשלמת מטרות המוצר תוך שמירה על איכות ועמידה בזמנים.</div>
+
+<div class="buttons">
+	<a href="TeamMemberUpdate.html" class="form-btn">עדכון פרטים</a>
+  <a href="TeamMemberTasks.html" class="form-btn">דו''ח משימות</a>
+  <a href="teammemberskanban.html" class="form-btn">לוח קנבן לאיש צוות</a>
+</div>
+
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>משימה</th>
+      <th>שלב</th>
+      <th>תיאור</th>
+      <th>אחראי</th>
+      <th>סטטוס</th>
+      <th>תאריך</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>בניית טופס הרשמה</td>
+      <td>Backlog</td>
+      <td>המשתמש מזין פרטים ונשמרים במסד</td>
+      <td style="font-size: 16px"><span lang="en-us">רועי פלס</span></td>
+      <td>טרם התחיל</td>
+      <td>2025-04-20</td>
+    </tr>
+    <tr>
+      <td>קישור למסד נתונים</td>
+      <td>Sprint</td>
+      <td>קוד PHP לשמירת משתמשים</td>
+      <td style="font-size: 16px"><span lang="en-us">עידו לייר</span></td>
+      <td>בתהליך</td>
+      <td>2025-04-21</td>
+    </tr>
+    <tr>
+      <td>בדיקת מובייל</td>
+      <td>Verification</td>
+      <td>בדיקות רספונסיביות במכשירים ניידים</td>
+      <td style="font-size: 16px"><span lang="en-us">דניה קמחי</span></td>
+      <td>בהמתנה</td>
+      <td>2025-04-22</td>
+    </tr>
+    <tr>
+      <td>עיצוב ממשק משתמש</td>
+      <td>Completed</td>
+      <td>הוספת צבעים וכפתורים</td>
+      <td style="font-size: 16px"><span lang="en-us">גל רביד</span></td>
+      <td>בוצע</td>
+      <td>2025-04-19</td>
+    </tr>
+  </tbody>
+</table>
+
+<footer dir="ltr">
+  &copy; 2025 Taskly Team D2
+</footer>
+
+</body>
+</html>

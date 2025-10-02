@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>בעל מוצר דף הבית</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      direction: rtl;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    table.top-bar {
+      width: 100%;
+      height: 70px;
+      background-color: #266C99;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    table.top-bar td {
+      color: white;
+      font-size: x-large;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 30px;
+      color: #266C99;
+    }
+
+    .description {
+      background-color: #ffffffcc;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 700px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .team-table {
+      margin: 40px auto;
+      width: 90%;
+      max-width: 800px;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-table th, .team-table td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .team-table th {
+      background-color: #266C99;
+      color: white;
+    }
+
+    .team-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .buttons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .form-btn {
+      background-color: #266C99;
+      color: white;
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-btn:hover {
+      background-color: #1f5a80;
+    }
+
+    .fixed-toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+    }
+
+    body.has-toolbar {
+      padding-top: 70px;
+    }
+  </style>
+</head>
+
+<body class="has-toolbar">
+
+<div class="fixed-toolbar">
+  <table style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 90px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="ProductOwner.html" style="color: #FFFFFF; text-decoration: none;">דף הבית</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">אחורה</a>
+      </td>
+		<td style="width: 180px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+      <a href="login.html" style="color: #FFFFFF; text-decoration: none;">התנתקות</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	  גל רביד 318732328</td>
+    </tr>
+  </table>
+</div>
+
+<h1>ברוך הבא לדף הבית של בעל מוצר</h1>
+
+<div class="description">
+  Product Owner אחראי על הגדרת מטרות המוצר, ניהול הדרישות העסקיות, תעדוף המשימות וסנכרון בין הצוות ללקוחות. הוא מוביל את חזון המוצר ומוודא שהצוות מייצר ערך בכל ספרינט.
+</div>
+
+<div class="buttons">
+	<a href="ProductUpdate.html" class="form-btn">עדכון פרטים</a>
+  <a href="productsreport.html" class="form-btn">דו"ח מוצרים</a>
+  <a href="productownerkanban.html" class="form-btn">לוח קנבן בעל מוצר </a>
+</div>
+
+<table class="team-table" style="width: 83%; height: 203px">
+  <thead>
+    <tr>
+      <th>שם של עובדים פנויים</th>
+      <th>תפקיד</th>
+      <th>עיר</th>
+      <th>שיוך לצוות המוצר</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>גל רביד</td>
+      <td>Frontend Developer</td>
+      <td>תל אביב</td>
+      <td><input type="checkbox" /> שיוך</td>
+    </tr>
+    <tr>
+      <td>רועי פלס</td>
+      <td>PHP Developer</td>
+      <td>פתח תקווה</td>
+      <td><input type="checkbox" /> שיוך</td>
+    </tr>
+    <tr>
+      <td>דניה קמחי</td>
+      <td>UX Designer</td>
+      <td>חיפה</td>
+      <td><input type="checkbox" /> שיוך</td>
+    </tr>
+    <tr>
+      <td>עידו לייר</td>
+      <td>Database Engineer</td>
+      <td>ראשון לציון</td>
+      <td><input type="checkbox" /> שיוך</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="buttons">
+	<a href="AssociationCompletedPO.html" class="form-btn">שייך</a>
+  </div>
+
+<br>
+<footer dir="ltr">
+  &copy; 2025 Taskly Team D2
+</footer>
+
+</body>
+</html>

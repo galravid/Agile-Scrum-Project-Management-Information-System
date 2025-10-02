@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+  <style>
+      body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-image: url('background.jpg');   background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+    table {
+      background-color: #ffffff;
+      width: 100%;
+      height: 70px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+	p {
+  font-size: 18pt;
+  border: 2px solid #266C99;
+  border-radius: 30px;
+  padding: 30px;
+  margin: 40px auto;
+  width: 70%;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.label-text {
+  font-size: 24pt;
+  font-weight: bold;
+}
+
+.role-links a {
+  display: block;
+  font-size: 20pt;
+  margin: 10px 0;
+  color: #266C99;
+  text-decoration: none;
+}
+
+.role-links a:hover {
+  text-decoration: underline;
+}
+
+	h2 {
+	font-size: 30pt;
+}
+    h1 {
+    font-size: 40pt;
+      color: #333;
+      margin-top: 20px;
+    }
+	
+input[type=submit],
+input[type=reset] {
+  padding: 20px 40px;
+  font-size: 20pt;
+  margin: 15px 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: #266C99;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+input[type=submit]:hover,
+input[type=reset]:hover {
+  background-color: #1f5a80;
+}
+.fixed-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  
+  body.has-toolbar {
+  padding-top: 70px;
+}
+    
+    </style>
+</head>
+
+<body class="has-toolbar">
+
+  <div class="fixed-toolbar">
+  <table dir="rtl" style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 90px; font-size: x-large; color: #FFFFFF; text-align: center;">
+        <a href="index.html" style="color: #FFFFFF; text-decoration: none;">דף הבית</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; color: #FFFFFF; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">אחורה</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+      <a href="login.html" style="color: #FFFFFF; text-decoration: none;">התנתקות</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	  גל רביד 318732328</td>
+    </tr>
+  </table>
+</div>
+
+<div style="text-align:center;">
+<h1><em>מערכת טסקלי לניהול פרויקטים</em><hr>כניסה למערכת</h1>
+<br>
+<form method="get" action="CompanyManager.html">
+	<table style=" border:3px solid #266C99; border-radius: 20px; width:80%; height: 70px;" align="center" cellpadding="10" cellspacing="10">
+		<tr>
+			<td style="height: 54px; text-align: right; width: 53%">
+			<input name="login" type="text">
+			</td>
+			<td dir="rtl" class="label-text" style="width: 50%; text-align: left; height: 54px">שם משתמש:</td>
+		</tr>
+		<tr>
+			<td style="text-align: right; width: 53%">
+			<input name="password" type="password"></td>
+			<td dir="rtl" class="label-text" style="width: 50%; text-align: left">סיסמה:</td>
+		</tr>
+		<tr>
+			<td colspan="2" dir="rtl">
+			<input name="Reset1" type="reset" value="ביטול">
+			<input name="Submit1" type="submit" value="להגיש">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="role-links">
+			<a href="ProductOwner.html">Product Owner </a><br>
+			<a href="ScrumMaster.html">Scrum Master</a><br>
+			<a href="TeamMember.html">Team Member</a></td>
+		</tr>
+	</table>
+</form>
+</div>
+<br>
+<br>
+<footer>
+    &copy; 2025 Taskly Team D2
+  </footer>
+
+</body>
+
+</html>

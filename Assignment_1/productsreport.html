@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>דו״ח מוצר</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      text-align: center;
+      direction: rtl;
+    }
+
+    table.top-bar {
+      width: 100%;
+      height: 70px;
+      background-color: #266C99;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    table.top-bar td {
+      color: white;
+      font-size: x-large;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    h1 {
+      margin-top: 40px;
+      font-size: 28px;
+      color: #266C99;
+    }
+
+    p.subtitle {
+      font-size: 18px;
+      margin: 10px auto 30px;
+      width: 80%;
+    }
+
+    .report-table {
+      margin: auto;
+      width: 95%;
+      max-width: 1000px;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-table th, .report-table td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .report-table th {
+      background-color: #266C99;
+      color: white;
+    }
+
+    .report-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+	.fixed-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  
+  body.has-toolbar {
+  padding-top: 70px;
+}
+.button-group {
+  display: flex;
+  justify-content:right;
+  gap: 40px;
+  margin-top: 40px;margin-right: 2cm;
+}
+
+.button-group button {
+  width:auto;position:fixed;z-index:999;
+  font-size: 17px;
+  padding: 12px 28px;
+  background-color: #266C99;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  text-align:center;
+}
+
+.button-group button:hover {
+  background-color: #1f5a80;
+}
+    
+    </style>
+</head>
+
+<body class="has-toolbar">
+
+<div class="fixed-toolbar">
+  <table style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 90px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="ProductOwner.html" style="color: #FFFFFF; text-decoration: none;">דף הבית</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">אחורה</a>
+      </td>
+	<td style="width: 180px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+      <a href="login.html" style="color: #FFFFFF; text-decoration: none;">התנתקות</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	  גל רביד 318732328</td>
+    </tr>
+  </table>
+</div>
+
+<h1>דו״ח מוצר<span lang="en-us"> - Products Report</span></h1>
+
+<table class="report-table">
+  <thead>
+    <tr>
+      <th>שם</th>
+      <th>תיאור</th>
+      <th>מטרה</th>
+      <th>תאריך התחלה</th>
+      <th>תאריך מסירה</th>
+      <th>תקציב</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Taskly AI</td>
+      <td>כלי לניהול פרויקטים מבוסס בינה מלאכותית</td>
+      <td>שיפור היעילות של צוותים אג'ייל</td>
+      <td>2025-04-01</td>
+      <td>2025-06-15</td>
+      <td>400000 ₪</td>
+    </tr>
+    <tr>
+      <td>MyDogy App</td>
+      <td>אפליקציה לחיבור בין בעלי כלבים ושירותים וטרינריים</td>
+      <td>יצירת קהילה לכלבי עיר</td>
+      <td>2025-03-10</td>
+      <td>2025-07-30</td>
+      <td>250000 ₪</td>
+    </tr>
+    <tr>
+      <td>Scrum Dashboard</td>
+      <td>מערכת מעקב אחר סטטוסים ומשימות עבור Scrum Masters</td>
+      <td>תמיכה מלאה בדיווחי Scrum ו-Kanban</td>
+      <td>2025-02-20</td>
+      <td>2025-05-15</td>
+      <td>310000 ₪</td>
+    </tr>
+  </tbody>
+</table>
+
+<br>
+<footer dir="ltr">
+  &copy; 2025 Taskly Team D2
+</footer>
+
+</body>
+</html>

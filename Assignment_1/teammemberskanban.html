@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>לוח קנבן לאיש צוות</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+   
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-image: url('background.jpg');   background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+    table.top-bar {
+      width: 100%;
+      height: 70px;
+      background-color: #266C99;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      direction: rtl;
+    }
+
+    table.top-bar td {
+      color: #FFFFFF;
+      font-size: x-large;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    h1 {
+      text-align: center;
+      color: #266C99;
+      margin-top: 30px;
+    }
+
+    .kanban-board {
+    justify-content: center;
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 20px;
+      margin-bottom: 40px;
+    }
+
+    .kanban-column {
+      flex: 0 0 220px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .kanban-column h2 {
+      font-size: 18px;
+      margin: 10px 0;
+      text-align: center;
+      padding: 8px;
+      border-radius: 6px;
+      color: white;
+    }
+
+    .new h2 { background-color: #777; }
+    .todo h2 { background-color: #FF9800; }
+    .doing h2 { background-color: #03A9F4; }
+    .review h2 { background-color: #FFC107; }
+    .done h2 { background-color: #4CAF50; }
+
+    .task-card {
+      background: white;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .task-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .assigned {
+      font-size: 12px;
+      color: #555;
+      margin-top: 8px;
+      text-align: left;
+    }
+  .fixed-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+  }
+  
+  body.has-toolbar {
+  padding-top: 70px;
+}
+.button-group {
+  display: flex;
+  justify-content: right;
+  gap: 40px;
+  margin-top: 40px;margin-right: 2cm;
+}
+
+.button-group button {
+  width:auto; 
+  font-size: 17px;
+  padding: 12px 28px;
+  background-color: #266C99;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  text-align:center;
+}
+
+.button-group button:hover {
+  background-color: #1f5a80;
+}
+    
+    </style>
+</head>
+
+<body class="has-toolbar">
+
+<div class="fixed-toolbar">
+  <table style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 90px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="TeamMember.html" style="color: #FFFFFF; text-decoration: none;">דף הבית</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">אחורה</a>
+      </td>
+		<td style="width: 180px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+      <a href="login.html" style="color: #FFFFFF; text-decoration: none;">התנתקות</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	  גל רביד 318732328</td>
+    </tr>
+  </table>
+</div>
+
+  <h1>לוח קנבן - Team Members</h1>
+  <div class="kanban-board">
+    <div class="kanban-column new">
+      <h2>חדש</h2>
+      <div class="task-card"><div class="task-title">מחקר מתחרים</div><div>בדיקת פלטפורמות קיימות</div><div class="assigned">הוקצה ל: עידו</div></div>
+      <div class="task-card"><div class="task-title">אפיון ראשוני</div><div>רשימת תכונות</div><div class="assigned">הוקצה ל: גל</div></div>
+      <div class="task-card"><div class="task-title">הגדרת תפקידים</div><div>חלוקת משימות</div><div class="assigned">הוקצה ל: רועי</div></div>
+    </div>
+    <div class="kanban-column todo">
+      <h2>לביצוע</h2>
+      <div class="task-card"><div class="task-title">יצירת בסיס נתונים</div><div>user, task, product</div><div class="assigned">הוקצה ל: דאניה</div></div>
+      <div class="task-card"><div class="task-title">קידוד login</div><div>html + php</div><div class="assigned">הוקצה ל: רועי</div></div>
+      <div class="task-card"><div class="task-title">הוספת style</div><div>CSS אחיד</div><div class="assigned">הוקצה ל: גל</div></div>
+    </div>
+    <div class="kanban-column doing">
+      <h2>בתהליך</h2>
+      <div class="task-card"><div class="task-title">חיבור למסד</div><div>connection.php</div><div class="assigned">הוקצה ל: עידו</div></div>
+      <div class="task-card"><div class="task-title">בדיקת טפסים</div><div>ולידציה</div><div class="assigned">הוקצה ל: רועי</div></div>
+      <div class="task-card"><div class="task-title">יצירת footer</div><div>HTML בסיסי</div><div class="assigned">הוקצה ל: גל</div></div>
+    </div>
+    <div class="kanban-column review">
+      <h2>בסקירה</h2>
+      <div class="task-card"><div class="task-title">UI הרשמה</div><div>צבעים ופינות</div><div class="assigned">הוקצה ל: דאניה</div></div>
+      <div class="task-card"><div class="task-title">בדיקת שימושיות</div><div>ניווט ותפריטים</div><div class="assigned">הוקצה ל: רועי</div></div>
+      <div class="task-card"><div class="task-title">אבטחת מידע</div><div>הצפנת סיסמאות</div><div class="assigned">הוקצה ל: עידו</div></div>
+    </div>
+    <div class="kanban-column done">
+      <h2>בוצע</h2>
+      <div class="task-card"><div class="task-title">צוות בפרויקט</div><div>טבלת צוותים</div><div class="assigned">בוצע ע"י: גל</div></div>
+      <div class="task-card"><div class="task-title">header כחול</div><div>הוספת ניווט</div><div class="assigned">בוצע ע"י: רועי</div></div>
+      <div class="task-card"><div class="task-title">טופס הרשמה</div><div>מבנה בסיסי</div><div class="assigned">בוצע ע"י: דאניה</div></div>
+    </div>
+  </div>
+  <footer>
+    &copy; 2025 Taskly Team D2
+  </footer>
+
+</body>
+</html>
