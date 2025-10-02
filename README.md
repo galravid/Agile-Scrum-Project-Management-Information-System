@@ -1,6 +1,6 @@
 # Agile Scrum Project Management Information System
 
-## Assignment 1 – Website Project
+## Assignment 1
 
 In this assignment, I created a basic static website as part of the course.  
 I used **Expression Web** to design, organize, and test the project files.  
