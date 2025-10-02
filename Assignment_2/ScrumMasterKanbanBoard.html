@@ -1,0 +1,436 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <meta charset="UTF-8" />
+  <title>Scrum Master Kanban Board</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="ScrumMasterKanbanStyle.css">
+  <script src="scrum_data_en.js"></script>
+</head>
+<body class="has-toolbar">
+<div class="fixed-toolbar">
+  <table dir="ltr" style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 150px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="ScrumMaster.html" style="color: #FFFFFF; text-decoration: none;">Home Page</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">Back</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br>
+<h1>Scrum Master Kanban Board</h1>
+
+<h2>Add New Task</h2>
+<form id="add-task-form">
+  <input type="text" id="task-title" placeholder="Title" required>
+  <input type="text" id="task-description" placeholder="Description">
+  <input type="text" id="task-createddate" placeholder="Created Date (YYYY-MM-DD)">
+  <input type="number" id="task-value" placeholder="Value" required>
+  <select id="task-priority">
+    <option value="High">High</option>
+    <option value="Medium">Medium</option>
+    <option value="Low">Low</option>
+  </select>
+  <input type="text" id="task-urgency" placeholder="Urgency">
+  <input type="text" id="task-risk" placeholder="Risk">
+  <input type="text" id="task-complexity" placeholder="Complexity">
+  <input type="number" id="task-workload" placeholder="Workload" required>
+  <input type="text" id="task-dependencies" placeholder="Dependencies (comma-separated task IDs)">
+  <button type="submit">Add Task</button>
+</form>
+
+<div>
+  <label for="sprint-selector">Select Sprint:</label>
+  <select id="sprint-selector"></select>
+</div>
+<div id="kanban-board" class="kanban-board"></div>
+
+<script>
+let draggedTaskId = null;
+let scrumBacklogSortBy = "value";
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev, taskId) {
+  draggedTaskId = taskId;
+}
+
+function drop(ev, targetOwner, sprintName) {
+  ev.preventDefault();
+  if (!draggedTaskId || !sprintName) return;
+
+  const task = kobj.kanban.tasks[draggedTaskId];
+  if (task) {
+    task.owner = targetOwner;
+
+    for (const status in kobj.kanban.sprintlog[sprintName]) {
+      const idx = kobj.kanban.sprintlog[sprintName][status].indexOf(draggedTaskId);
+      if (idx !== -1) {
+        kobj.kanban.sprintlog[sprintName][status].splice(idx, 1);
+      }
+    }
+
+    const backlogIndex = kobj.kanban.backlog.indexOf(draggedTaskId);
+    if (backlogIndex !== -1) {
+      kobj.kanban.backlog.splice(backlogIndex, 1);
+    }
+
+    if (!kobj.kanban.sprintlog[sprintName]["Doing"]) {
+      kobj.kanban.sprintlog[sprintName]["Doing"] = [];
+    }
+
+    kobj.kanban.sprintlog[sprintName]["Doing"].push(draggedTaskId);
+    renderKanbanBoard();
+  }
+}
+
+function priorityRank(p) {
+  return p === "High" ? 3 : p === "Medium" ? 2 : 1;
+}
+
+function onScrumBacklogSortChange(value) {
+  scrumBacklogSortBy = value;
+  renderKanbanBoard();
+}
+
+function createTaskCard(task, taskId, status = "") {
+  const card = document.createElement("div");
+  card.className = "task-card";
+  card.id = `task-${taskId}`;
+  card.setAttribute("draggable", "true");
+  card.setAttribute("ondragstart", `drag(event, '${taskId}')`);
+  card.innerHTML = `
+    <div class="task-title">${task.title}</div>
+    <div class="task-status status-${status.toUpperCase()}">${status.toUpperCase()}</div>
+    <div>Description: ${task.description || "N/A"}</div>
+    <div>Created: ${task.createddate || "N/A"}</div>
+    <div>Value: ${task.value || "N/A"}</div>
+    <div>Priority: ${task.priority || "N/A"}</div>
+    <div>Urgency: ${task.urgency || "N/A"}</div>
+    <div>Risk: ${task.risk || "N/A"}</div>
+    <div>Workload: ${task.workload || "N/A"}</div>
+    <div>Complexity: ${task.complexity || "N/A"}</div>
+    <div>Dependencies: ${
+      Array.isArray(task.dependencies)
+        ? task.dependencies.map(depId => kobj.kanban.tasks[depId]?.title || depId).join(", ")
+        : task.dependencies || "None"
+    }</div>
+    <div class="task-actions">
+      <button class="edit-btn" onclick="editTask('${taskId}')">🖉 Edit</button>
+      <button class="delete-btn" onclick="deleteTask('${taskId}')">🗑️ Delete</button>
+    </div>
+  `;
+  return card;
+}
+
+function renderKanbanBoard() {
+  const selectedSprint = document.getElementById("sprint-selector").value;
+  const board = document.getElementById("kanban-board");
+  board.innerHTML = "";
+  const kanban = kobj.kanban;
+
+  const backlogColumn = document.createElement("div");
+  backlogColumn.className = "kanban-column backlog";
+  backlogColumn.id = "backlog-column";
+  backlogColumn.innerHTML = `
+    <h2>Backlog</h2>
+    <label for="scrum-backlog-sort">Sort by:</label>
+    <select id="scrum-backlog-sort" onchange="onScrumBacklogSortChange(this.value)">
+      <option value="value">Value</option>
+      <option value="priority">Priority</option>
+      <option value="dependencies">Dependencies</option>
+      <option value="workload">Workload</option>
+    </select>
+  `;
+
+  setTimeout(() => {
+    const selector = document.getElementById("scrum-backlog-sort");
+    if (selector) selector.value = scrumBacklogSortBy;
+  }, 0);
+
+  backlogColumn.ondragover = allowDrop;
+  backlogColumn.ondrop = ev => {
+    ev.preventDefault();
+    if (!draggedTaskId) return;
+    const task = kanban.tasks[draggedTaskId];
+    task.owner = null;
+
+    for (const status in kanban.sprintlog[selectedSprint]) {
+      kanban.sprintlog[selectedSprint][status] = kanban.sprintlog[selectedSprint][status].filter(id => id !== draggedTaskId);
+    }
+
+    if (!kanban.backlog.includes(draggedTaskId)) {
+      kanban.backlog.push(draggedTaskId);
+    }
+
+    draggedTaskId = null;
+    renderKanbanBoard();
+  };
+
+  kanban.backlog
+    .sort((a, b) => {
+      const taskA = kanban.tasks[a];
+      const taskB = kanban.tasks[b];
+
+      switch (scrumBacklogSortBy) {
+        case "priority":
+          return priorityRank(taskB.priority) - priorityRank(taskA.priority);
+        case "dependencies":
+          return (taskA.dependencies?.length || 0) - (taskB.dependencies?.length || 0);
+        case "workload":
+          return taskA.workload - taskB.workload;
+        case "value":
+        default:
+          return taskB.value - taskA.value;
+      }
+    })
+    .forEach(id => backlogColumn.appendChild(createTaskCard(kanban.tasks[id], id, "New")));
+
+  board.appendChild(backlogColumn);
+
+  const membersMap = {};
+  if (kanban.sprintlog[selectedSprint]) {
+    for (const status in kanban.sprintlog[selectedSprint]) {
+      kanban.sprintlog[selectedSprint][status].forEach(id => {
+        const task = kanban.tasks[id];
+        if (task.owner) {
+          if (!membersMap[task.owner]) membersMap[task.owner] = [];
+          membersMap[task.owner].push({ task, status });
+        }
+      });
+    }
+  }
+
+  const sortedMembers = Object.entries(membersMap).sort(([, a], [, b]) => {
+    const sumA = a.reduce((sum, t) => sum + (t.task.workload || 0), 0);
+    const sumB = b.reduce((sum, t) => sum + (t.task.workload || 0), 0);
+    return sumB - sumA;
+  });
+
+  for (const [memberId, taskList] of sortedMembers) {
+    const column = document.createElement("div");
+    column.className = "kanban-column";
+    column.ondragover = allowDrop;
+    column.ondrop = ev => drop(ev, memberId, selectedSprint);
+    const member = kanban.members[memberId];
+    column.innerHTML = `
+      <h2>
+        <img src="${member.image || 'default-user.png'}" alt="${member.name}" style="width:30px; height:30px; border-radius:50%; vertical-align:middle; margin-right:8px;">
+        ${member.name}
+      </h2>
+    `;
+
+    taskList
+      .sort((a, b) => b.task.workload - a.task.workload)
+      .forEach(({ task, status }) => {
+        const taskId = Object.keys(kanban.tasks).find(k => kanban.tasks[k] === task);
+        column.appendChild(createTaskCard(task, taskId, status));
+      });
+
+    board.appendChild(column);
+  }
+  renderGoogleWorkloadChart();
+
+
+}
+
+function editTask(taskId) {
+  const task = kobj.kanban.tasks[taskId];
+
+  const newTitle = prompt("Edit title:", task.title);
+  const newDescription = prompt("Edit description:", task.description || "");
+  const newCreatedDate = prompt("Edit created date (YYYY-MM-DD):", task.createddate || "");
+  const newValue = prompt("Edit value (number):", task.value);
+  const newPriority = prompt("Edit priority (High / Medium / Low):", task.priority);
+  const newUrgency = prompt("Edit urgency:", task.urgency || "");
+  const newRisk = prompt("Edit risk:", task.risk || "");
+  const newComplexity = prompt("Edit complexity:", task.complexity || "");
+  const newWorkload = prompt("Edit workload (number):", task.workload);
+  const newDependencies = prompt("Edit dependencies (comma-separated IDs):", Array.isArray(task.dependencies) ? task.dependencies.join(", ") : task.dependencies);
+
+  if (newTitle !== null) task.title = newTitle;
+  if (newDescription !== null) task.description = newDescription;
+  if (newCreatedDate !== null) task.createddate = newCreatedDate;
+  if (newValue !== null && !isNaN(newValue)) task.value = parseInt(newValue);
+  if (newPriority !== null && ["High", "Medium", "Low"].includes(newPriority)) task.priority = newPriority;
+  if (newUrgency !== null) task.urgency = newUrgency;
+  if (newRisk !== null) task.risk = newRisk;
+  if (newComplexity !== null) task.complexity = newComplexity;
+  if (newWorkload !== null && !isNaN(newWorkload)) task.workload = parseInt(newWorkload);
+  if (newDependencies !== null) {
+    const depList = newDependencies
+      .split(",")
+      .map(d => d.trim())
+      .filter(d => d.length > 0);
+    task.dependencies = depList;
+  }
+
+  alert("Task updated!");
+  renderKanbanBoard();
+}
+
+function deleteTask(taskId) {
+  if (confirm("Delete this task?")) {
+    delete kobj.kanban.tasks[taskId];
+
+    const backlog = kobj.kanban.backlog;
+    const index = backlog.indexOf(taskId);
+    if (index !== -1) backlog.splice(index, 1);
+
+    for (const sprint in kobj.kanban.sprintlog) {
+      for (const status in kobj.kanban.sprintlog[sprint]) {
+        kobj.kanban.sprintlog[sprint][status] =
+          kobj.kanban.sprintlog[sprint][status].filter(id => id !== taskId);
+      }
+    }
+
+    alert("Task deleted!");
+    renderKanbanBoard();
+  }
+}
+
+document.getElementById("add-task-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const title = document.getElementById("task-title").value.trim();
+  const description = document.getElementById("task-description").value.trim();
+  const createddate = document.getElementById("task-createddate").value.trim();
+  const value = parseInt(document.getElementById("task-value").value);
+  const priority = document.getElementById("task-priority").value;
+  const urgency = document.getElementById("task-urgency").value.trim();
+  const risk = document.getElementById("task-risk").value.trim();
+  const complexity = document.getElementById("task-complexity").value.trim();
+  const workload = parseInt(document.getElementById("task-workload").value);
+  const dependenciesInput = document.getElementById("task-dependencies").value.trim();
+
+  if (!title || isNaN(value) || isNaN(workload)) {
+    alert("Please fill out all required fields correctly.");
+    return;
+  }
+
+  const dependencies = dependenciesInput
+    ? dependenciesInput.split(",").map(dep => dep.trim()).filter(dep => dep.length > 0)
+    : [];
+
+  const taskId = "task-" + Date.now();
+
+  const newTask = {
+    title,
+    description,
+    createddate,
+    value,
+    priority,
+    urgency,
+    risk,
+    complexity,
+    workload,
+    dependencies
+  };
+
+  kobj.kanban.tasks[taskId] = newTask;
+  kobj.kanban.backlog.push(taskId);
+
+  renderKanbanBoard();
+});
+
+window.onload = function () {
+  const sprintSelector = document.getElementById("sprint-selector");
+  Object.keys(kobj.kanban.sprintlog).forEach(sprint => {
+    const option = document.createElement("option");
+    option.value = sprint;
+    option.textContent = sprint;
+    sprintSelector.appendChild(option);
+  });
+
+  sprintSelector.addEventListener("change", () => {
+    renderKanbanBoard();
+  });
+
+  if (sprintSelector.options.length > 0) {
+    renderKanbanBoard();
+  }
+  renderGoogleWorkloadChart();
+};
+</script>
+
+<br><br>
+<h1 style="text-align:center;">Scrum Master Report</h1><br>
+<div id="workload-chart" style="width: 90%; height: 500px; margin: auto;"></div>
+<footer>&copy; 2025 Taskly Team D2</footer>
+<script>
+google.charts.load('current', { 'packages': ['corechart'] });
+google.charts.setOnLoadCallback(renderGoogleWorkloadChart);
+
+function renderGoogleWorkloadChart() {
+  if (!window.kobj || !kobj.kanban) return;
+
+  const kanban = kobj.kanban;
+  const tasks = kanban.tasks || {};
+  const sprintlog = kanban.sprintlog || {};
+  const members = kanban.members || {};
+
+  const workloadByMember = {};
+
+  for (const [sprintName, sprintData] of Object.entries(sprintlog)) {
+    for (const taskIds of Object.values(sprintData)) {
+      taskIds.forEach(taskId => {
+        const task = tasks[taskId];
+        if (task?.owner && members[task.owner]) {
+          const ownerName = members[task.owner].name;
+          workloadByMember[ownerName] = (workloadByMember[ownerName] || 0) + (task.workload || 0);
+        }
+      });
+    }
+  }
+
+  const chartData = new google.visualization.DataTable();
+  chartData.addColumn('string', 'Team Member');
+  chartData.addColumn('number', 'Total Workload');
+
+  Object.entries(workloadByMember).forEach(([member, workload]) => {
+    chartData.addRow([member, workload]);
+  });
+
+  const options = {
+    title: 'Total Workload per Team Member',
+    titleTextStyle: {
+      fontSize: 18,
+      bold: true,
+      color: '#333',
+    },
+    legend: { position: 'none' },
+    vAxis: {
+      title: 'Workload',
+      minValue: 0,
+      titleTextStyle: {
+        bold: true
+      }
+    },
+    hAxis: {
+      title: 'Team Member',
+      titleTextStyle: {
+        bold: true
+      }
+    },
+    chartArea: { width: '70%', height: '70%' }
+  };
+
+  const chart = new google.visualization.ColumnChart(document.getElementById('workload-chart'));
+  chart.draw(chartData, options);
+}
+</script>
+</html>

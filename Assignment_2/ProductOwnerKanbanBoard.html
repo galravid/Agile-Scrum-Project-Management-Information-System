@@ -1,0 +1,397 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Product Owner Kanban Board</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="ProductOwnerKanbanStyle.css">
+  <script src="scrum_data_en.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body class="has-toolbar">
+
+<div class="fixed-toolbar">
+  <table dir="ltr" style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+      <td style="width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="index.html">
+          <img src="logo.png" alt="תמונת לוגו" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="width: 150px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="ProductOwner.html" style="color: #FFFFFF; text-decoration: none;">Home Page</a>
+      </td>
+      <td style="width: 180px; font-size: x-large; cursor: pointer; text-align: center;">
+        <a href="javascript:history.back()" style="color: #FFFFFF; text-decoration: none;">Back</a>
+      </td>
+      <td style="text-align: center; font-size: x-large; color: white; padding-right: 0;">
+      </td>
+    </tr>
+  </table>
+</div>
+
+<br>
+<h1>Product Owner Kanban Board</h1>
+
+<script>
+let draggedTaskId = null;
+let backlogSortBy = "value";
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev, taskId) {
+  draggedTaskId = taskId;
+}
+
+function drop(ev, targetStatus, sprintName) {
+  ev.preventDefault();
+  if (!draggedTaskId || !sprintName || !targetStatus) return;
+
+  for (const sprint in kobj.kanban.sprintlog) {
+    for (const status in kobj.kanban.sprintlog[sprint]) {
+      const index = kobj.kanban.sprintlog[sprint][status].indexOf(draggedTaskId);
+      if (index !== -1) {
+        kobj.kanban.sprintlog[sprint][status].splice(index, 1);
+      }
+    }
+  }
+
+  const backlogIndex = kobj.kanban.backlog.indexOf(draggedTaskId);
+  if (backlogIndex !== -1) {
+    kobj.kanban.backlog.splice(backlogIndex, 1);
+  }
+
+  kobj.kanban.sprintlog[sprintName][targetStatus].push(draggedTaskId);
+  draggedTaskId = null;
+
+  renderKanbanBoard();
+}
+
+function editTask(taskId) {
+  const task = kobj.kanban.tasks[taskId];
+  const newTitle = prompt("Edit title:", task.title);
+  const newDescription = prompt("Edit description:", task.description || "");
+  const newCreatedDate = prompt("Edit created date (YYYY-MM-DD):", task.createddate || "");
+  const newValue = prompt("Edit value (number):", task.value);
+  const newPriority = prompt("Edit priority (High / Medium / Low):", task.priority);
+  const newUrgency = prompt("Edit urgency:", task.urgency || "");
+  const newRisk = prompt("Edit risk:", task.risk || "");
+  const newComplexity = prompt("Edit complexity:", task.complexity || "");
+  const newWorkload = prompt("Edit workload (number):", task.workload);
+  const newDependencies = prompt("Edit dependencies (comma-separated IDs):", Array.isArray(task.dependencies) ? task.dependencies.join(", ") : task.dependencies);
+  const newOwner = prompt("Edit owner ID:", task.owner || "");
+
+  if (newTitle !== null) task.title = newTitle;
+  if (newDescription !== null) task.description = newDescription;
+  if (newCreatedDate !== null) task.createddate = newCreatedDate;
+  if (newValue !== null && !isNaN(newValue)) task.value = parseInt(newValue);
+  if (newPriority !== null && ["High", "Medium", "Low"].includes(newPriority)) task.priority = newPriority;
+  if (newUrgency !== null) task.urgency = newUrgency;
+  if (newRisk !== null) task.risk = newRisk;
+  if (newComplexity !== null) task.complexity = newComplexity;
+  if (newWorkload !== null && !isNaN(newWorkload)) task.workload = parseInt(newValue);
+  if (newDependencies !== null) {
+    const depList = newDependencies.split(",").map(d => d.trim()).filter(d => d.length > 0);
+    task.dependencies = depList;
+  }
+  if (newOwner !== null && kobj.kanban.members[newOwner]) task.owner = newOwner;
+
+  alert("Task updated!");
+  renderKanbanBoard();
+}
+
+function deleteTask(taskId) {
+  if (confirm("Delete this task?")) {
+    delete kobj.kanban.tasks[taskId];
+
+    const backlog = kobj.kanban.backlog;
+    const index = backlog.indexOf(taskId);
+    if (index !== -1) backlog.splice(index, 1);
+
+    for (const sprint in kobj.kanban.sprintlog) {
+      for (const status in kobj.kanban.sprintlog[sprint]) {
+        kobj.kanban.sprintlog[sprint][status] =
+          kobj.kanban.sprintlog[sprint][status].filter(id => id !== taskId);
+      }
+    }
+
+    alert("Task deleted!");
+    renderKanbanBoard();
+  }
+}
+
+function createTaskCard(task, taskId) {
+  const card = document.createElement("div");
+  card.className = "task-card";
+  card.id = `task-${taskId}`;
+  card.setAttribute("draggable", "true");
+  card.setAttribute("ondragstart", `drag(event, '${taskId}')`);
+
+  const owner = kobj.kanban.members[task.owner];
+  const ownerInfo = owner
+    ? `<div class="assigned"><img src="${owner.image}" style="width:25px; height:25px; border-radius:50%; vertical-align:middle;"><span>${owner.name}</span></div>`
+    : `<div class="assigned">No owner assigned</div>`;
+
+  card.innerHTML = `
+    <div class="task-title">${task.title}</div>
+    <div>Description: ${task.description || "N/A"}</div>
+    <div>Created: ${task.createddate || "N/A"}</div>
+    <div>Urgency: ${task.urgency || "N/A"}</div>
+    <div>Risk: ${task.risk || "N/A"}</div>
+    <div>Complexity: ${task.complexity || "N/A"}</div>
+    <div>Value: ${task.value || "N/A"}</div>
+    <div>Priority: ${task.priority || "N/A"}</div>
+    <div>Workload: ${task.workload || "N/A"}</div>
+    <div>Dependencies: ${Array.isArray(task.dependencies) ? task.dependencies.map(depId => kobj.kanban.tasks[depId]?.title || depId).join(", ") : "None"}</div>
+    ${ownerInfo}
+    <div class="task-actions">
+      <button class="edit-btn" onclick="editTask('${taskId}')">🖉 Edit</button>
+      <button class="delete-btn" onclick="deleteTask('${taskId}')">🗑️ Delete</button>
+    </div>
+  `;
+  return card;
+}
+
+function priorityRank(p) {
+  return p === "High" ? 3 : p === "Medium" ? 2 : 1;
+}
+
+function onBacklogSortChange(value) {
+  backlogSortBy = value;
+  renderKanbanBoard();
+}
+
+function renderKanbanBoard() {
+  const board = document.getElementById("kanban-board");
+  board.innerHTML = "";
+
+  const kanban = kobj.kanban;
+  const backlogColumn = document.createElement("div");
+  backlogColumn.className = "kanban-column backlog";
+  backlogColumn.id = "backlog-column";
+  backlogColumn.innerHTML = `
+    <h2>Backlog</h2>
+    <label for="backlog-sort">Sort by:</label>
+    <select id="backlog-sort" onchange="onBacklogSortChange(this.value)">
+      <option value="value">Value</option>
+      <option value="priority">Priority</option>
+      <option value="dependencies">Dependencies</option>
+      <option value="workload">Workload</option>
+    </select>
+  `;
+
+  setTimeout(() => {
+    const selector = document.getElementById("backlog-sort");
+    if (selector) selector.value = backlogSortBy;
+  }, 0);
+
+  kanban.backlog.sort((a, b) => {
+    const taskA = kanban.tasks[a];
+    const taskB = kanban.tasks[b];
+    switch (backlogSortBy) {
+      case "priority":
+        return priorityRank(taskB.priority) - priorityRank(taskA.priority);
+      case "dependencies":
+        return (taskA.dependencies?.length || 0) - (taskB.dependencies?.length || 0);
+      case "workload":
+        return taskA.workload - taskB.workload;
+      case "value":
+      default:
+        return taskB.value - taskA.value;
+    }
+  }).forEach(id => {
+    const task = kanban.tasks[id];
+    backlogColumn.appendChild(createTaskCard(task, id));
+  });
+
+  board.appendChild(backlogColumn);
+
+  for (const [sprintName, sprintData] of Object.entries(kanban.sprintlog)) {
+    const sprintColumn = document.createElement("div");
+    sprintColumn.className = `kanban-column ${sprintName.toLowerCase().replace(/\s+/g, '')}`;
+    sprintColumn.innerHTML = `<h2>${sprintName}</h2>`;
+
+    ["new", "todo", "doing", "review", "done"].forEach(status => {
+      const statusSection = document.createElement("div");
+      statusSection.className = `${status}`;
+      statusSection.innerHTML = `<h2>${status.toUpperCase()}</h2>`;
+      statusSection.ondragover = allowDrop;
+      statusSection.ondrop = function (ev) {
+        drop(ev, status, sprintName);
+      };
+
+      const taskIds = sprintData[status];
+      taskIds.forEach(id => {
+        const task = kanban.tasks[id];
+        statusSection.appendChild(createTaskCard(task, id));
+      });
+
+      sprintColumn.appendChild(statusSection);
+    });
+
+    board.appendChild(sprintColumn);
+  }
+}
+
+function drawSprintReport(sprintName, containerId) {
+  google.charts.setOnLoadCallback(() => { 
+    const sprintData = kobj.kanban.sprintlog[sprintName];
+    if (!sprintData) {
+      document.getElementById(containerId).innerHTML = "<p>No data found for this sprint.</p>";
+      return;
+    }
+
+    const data = new google.visualization.DataTable();
+    data.addColumn('string', 'ID');
+    data.addColumn('string', 'Title');
+    data.addColumn('string', 'Description');
+    data.addColumn('string', 'Created Date');
+    data.addColumn('number', 'Value');
+    data.addColumn('string', 'Priority');
+    data.addColumn('string', 'Urgency');
+    data.addColumn('string', 'Risk');
+    data.addColumn('string', 'Complexity');
+    data.addColumn('number', 'Workload');
+    data.addColumn('string', 'Dependencies');
+    data.addColumn('string', 'Owner');
+    data.addColumn('string', 'Status');
+
+    for (const [status, taskIds] of Object.entries(sprintData)) {
+      for (const taskId of taskIds) {
+        const task = kobj.kanban.tasks[taskId];
+        if (!task) continue;
+
+        const dependencies = Array.isArray(task.dependencies)
+          ? task.dependencies.map(d => kobj.kanban.tasks[d]?.title || d).join(", ")
+          : "";
+
+        const ownerName = task.owner ? (kobj.kanban.members[task.owner]?.name || task.owner) : "N/A";
+
+        data.addRow([
+          taskId,
+          task.title,
+          task.description || "",
+          task.createddate || "",
+          task.value || 0,
+          task.priority || "",
+          String(task.urgency || ""),
+          String(task.risk || ""),   
+          String(task.complexity || ""),
+          task.workload || 0,
+          dependencies,
+          ownerName,
+          status.toUpperCase()
+        ]);
+      }
+    }
+
+    const table = new google.visualization.Table(document.getElementById(containerId));
+    table.draw(data, { showRowNumber: true, width: '100%', height: 'auto' });
+  });
+}
+
+window.onload = function () {
+  const ownerSelect = document.getElementById("task-owner");
+  for (const memberId in kobj.kanban.members) {
+    const opt = document.createElement("option");
+    opt.value = memberId;
+    opt.textContent = kobj.kanban.members[memberId].name;
+    ownerSelect.appendChild(opt);
+  }
+
+  renderKanbanBoard();
+
+  document.getElementById("add-task-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const title = document.getElementById("task-title").value.trim();
+    const description = document.getElementById("task-description").value.trim();
+    const createddate = document.getElementById("task-createddate").value.trim();
+    const value = parseInt(document.getElementById("task-value").value);
+    const priority = document.getElementById("task-priority").value;
+    const urgency = document.getElementById("task-urgency").value.trim();
+    const risk = document.getElementById("task-risk").value.trim();
+    const complexity = document.getElementById("task-complexity").value.trim();
+    const workload = parseInt(document.getElementById("task-workload").value);
+    const dependenciesInput = document.getElementById("task-dependencies").value.trim();
+    const owner = document.getElementById("task-owner").value;
+
+    if (!title || isNaN(value) || isNaN(workload)) {
+      alert("Please fill out all required fields correctly.");
+      return;
+    }
+
+    const dependencies = dependenciesInput
+      ? dependenciesInput.split(",").map(d => d.trim()).filter(d => d.length > 0)
+      : [];
+
+    const taskId = "task-" + Date.now();
+    const newTask = {
+      title,
+      description,
+      createddate,
+      value,
+      priority,
+      urgency,
+      risk,
+      complexity,
+      workload,
+      dependencies,
+      owner,
+    };
+
+    kobj.kanban.tasks[taskId] = newTask;
+    kobj.kanban.backlog.push(taskId);
+    renderKanbanBoard();
+  });
+
+  document.getElementById("show-report1-btn").addEventListener("click", function () {
+    drawSprintReport("Sprint 1", "sprint1-report");
+  });
+
+  document.getElementById("show-report2-btn").addEventListener("click", function () {
+    drawSprintReport("Sprint 2", "sprint2-report");
+  });
+};
+
+google.charts.load('current', { packages: ['table'] });
+</script>
+
+<br>
+<h2>Add New Task</h2>
+<form id="add-task-form">
+  <input type="text" id="task-title" placeholder="Title" required>
+  <input type="text" id="task-description" placeholder="Description">
+  <input type="text" id="task-createddate" placeholder="Created Date (YYYY-MM-DD)">
+  <input type="number" id="task-value" placeholder="Value" required>
+  <select id="task-priority">
+    <option value="High">High</option>
+    <option value="Medium">Medium</option>
+    <option value="Low">Low</option>
+  </select>
+  <input type="text" id="task-urgency" placeholder="Urgency">
+  <input type="text" id="task-risk" placeholder="Risk">
+  <input type="text" id="task-complexity" placeholder="Complexity">
+  <input type="number" id="task-workload" placeholder="Workload" required>
+  <input type="text" id="task-dependencies" placeholder="Dependencies (comma-separated task IDs)">
+  <select id="task-owner">
+    <option value="">-- Select Owner --</option>
+  </select>
+
+  <button type="submit">Add Task</button>
+</form>
+
+<div id="kanban-board" class="kanban-board"></div>
+<button id="show-report1-btn" class="lower-button">Product Owner Sprint 1 Report</button>
+<button id="show-report2-btn" class="lower-button">Product Owner Sprint 2 Report</button>
+<div id="sprint1-report" style="margin-top: 40px;"></div>
+<div id="sprint2-report" style="margin-top: 40px;"></div>
+
+<br><br>
+<footer>&copy; 2025 Taskly Team D2</footer>
+
+</body>
+</html>

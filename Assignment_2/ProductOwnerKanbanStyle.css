@@ -1,0 +1,269 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background-image: url('background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+table.top-bar {
+  width: 100%;
+  height: 70px;
+  background-color: #266C99;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  direction: rtl;
+}
+
+.task-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+.task-actions button:hover {
+  background-color: #1f5a80;
+}
+
+table.top-bar td {
+  color: #FFFFFF;
+  font-size: x-large;
+  cursor: pointer;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+  color: #266C99;
+  margin-top: 25px;
+}
+
+form#add-task-form {
+  max-width: 1000px;
+  margin: 10px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  padding: 6px 10px;
+}
+
+form#add-task-form input,
+form#add-task-form select,
+form#add-task-form button {
+  flex: 1 1 30%;
+  padding: 5px;
+  font-size: 13px;
+  margin: 2px;
+  box-sizing: border-box;
+}
+
+form#add-task-form button {
+  max-width: 150px;
+  background-color: #266C99;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.kanban-board {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 0;
+  margin: 0 auto 30px auto;
+  width: fit-content;
+}
+
+.kanban-column {
+  flex: 0 0 300px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.kanban-column h2 {
+  font-size: 18px;
+  margin: 10px 0;
+  text-align: center;
+  padding: 8px;
+  border-radius: 6px;
+  color: black;
+}
+
+
+.new h2 { background-color: #777; }
+.todo h2 { background-color: #FF9800; }
+.doing h2 { background-color: #03A9F4; }
+.review h2 { background-color: #FFC107; }
+.done h2 { background-color: #4CAF50; }
+
+.task-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.edit-btn {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.edit-btn:hover {
+  background-color: #115293;
+}
+
+.delete-btn {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background-color: #9a0007;
+}
+
+.task-card {
+  background: white;
+  margin: 6px 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  cursor: grab;
+}
+
+.task-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.assigned {
+  font-size: 12px;
+  color: #555;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.fixed-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+}
+
+body.has-toolbar {
+  padding-top: 70px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: right;
+  gap: 40px;
+  margin-top: 40px;
+  margin-right: 2cm;
+}
+
+.button-group button {
+  width: auto;
+  font-size: 17px;
+  padding: 12px 28px;
+  background-color: #266C99;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.button-group button:hover {
+  background-color: #1f5a80;
+}
+
+.lower-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #266C99;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 500px) {
+  .kanban-board {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    overflow: hidden;
+    align-items: center;
+  }
+
+  .kanban-column {
+    width: 300px;
+  }
+
+  .kanban-column h2 {
+    font-size: 16px;
+    margin: 0;
+    padding: 8px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  h1 {
+    font-size: 20px;
+    margin: 6px 0;
+  }
+
+  form#add-task-form {
+    margin: 10px auto;
+    width: 90%;
+  }
+
+  form#add-task-form input,
+  form#add-task-form select {
+    padding: 8px;
+    margin: 4px 0;
+    font-size: 14px;
+  }
+
+  form#add-task-form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 6px;
+  }
+
+  footer {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+}
