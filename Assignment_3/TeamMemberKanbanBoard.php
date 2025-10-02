@@ -1,0 +1,404 @@
+<?php
+
+session_start();
+$loggedInUserName = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : '';
+if (!isset($_SESSION['user_name']) || $_SESSION['user_role'] != '4') {
+    header("Location: Login.php");
+    exit();
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>איש צוות - לוח קנבן</title>
+  <link rel="stylesheet" href="TeamMemberKanbanStyle.css">
+    <style>
+          @media screen and (max-width: 350px) {
+        .fixed-toolbar table tr {
+            display: flex; 
+            flex-direction: column;
+            height: auto;         }
+
+        .fixed-toolbar table td {
+            width: 100% !important; 
+            text-align: center;
+            padding: 5px 0; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);         }
+        
+        .fixed-toolbar table td:last-child {
+            border-bottom: none; 
+        }
+        body.has-toolbar {
+            padding-top: auto;
+        }
+    }
+    
+    </style>
+  <script src="scrum_data_en.js"></script>
+</head>
+<body class="has-toolbar" dir="rtl">
+
+<div class="fixed-toolbar">
+  <table style="height: 70px; background-color: #266C99; width: 100%; border-collapse: collapse;">
+    <tr>
+	<td style="border: 1px solid #FFFFFF; width: 80px; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="MainMenu.php">
+          <img src="logo.png" alt="&#1514;&#1502;&#1493;&#1504;&#1514; &#1500;&#1493;&#1490;&#1493;" style="width: 50px; height: 50px;" align="middle">
+        </a>
+      </td>
+      <td style="border: 1px solid #FFFFFF; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="MainMenu.php" style="color: #FFFFFF; text-decoration: none;">
+		תפריט ראשי</a>
+      </td>
+      <td style="border: 1px solid #FFFFFF; font-size: x-large; cursor: pointer; color: #FFFFFF; text-align: center;">
+        <a href="LocalMenuTeamMember.php" style="color: #FFFFFF; text-decoration: none;">
+		תפריט מקומי</a>
+      </td>
+<td style="border: 1px solid #FFFFFF; text-align: center; font-size: x-large; color: white; padding-right: 0;">
+	&nbsp; &nbsp;הנך מחובר <?php echo $loggedInUserName; ?></td>
+	       <td style="border: 1px solid #FFFFFF; text-align: center; font-size: x-large; color: white; padding-right: 0;"><?php
+            $file_path = 'NameAndID.txt';
+            $name_and_id = @file_get_contents($file_path);
+            echo htmlspecialchars($name_and_id);
+            ?>
+	   	&nbsp;</td>
+    </tr>
+  </table>
+</div>
+<br><br><br><br><br><br><br><br><br>
+  <h1>איש צוות - לוח קנבן</h1>
+
+  <div>
+    <label for="team-member-selector">בחר איש צוות:</label>
+    <select id="team-member-selector"></select>
+    <label for="sprint-selector">בחר ספרינט:</label>
+    <select id="sprint-selector"></select>
+  </div>
+
+  <div id="kanban-board" class="kanban-board"></div>
+
+<script>
+let draggedTaskId = null;
+
+let sortByPerStatus = {
+  new: "value",
+  todo: "value",
+  doing: "value",
+  review: "value",
+  done: "value"
+};
+
+function priorityRank(p) {
+  return p === "High" ? 3 : p === "Medium" ? 2 : 1;
+}
+
+function onStatusSortChange(status, value) {
+  sortByPerStatus[status] = value;
+  renderBoard();
+}
+
+let memberSelector;
+let sprintSelector;
+let board;
+let kanban;
+
+
+function createTaskCard(task, taskId) {
+  const card = document.createElement("div");
+  card.className = "task-card";
+  card.id = `task-${taskId}`;
+  card.draggable = true;
+  card.addEventListener("dragstart", (e) => {
+    e.dataTransfer.setData("text/plain", taskId);
+    draggedTaskId = taskId;
+  });
+
+  card.innerHTML = `
+    <div class="task-title">${task.title}</div>
+    <div>Description: ${task.description || "N/A"}</div>
+    <div>Created: ${task.createddate || "N/A"}</div>
+    <div>Value: ${task.value || "N/A"}</div>
+    <div>Priority: ${task.priority || "N/A"}</div>
+    <div>Urgency: ${task.urgency || "N/A"}</div>
+    <div>Risk: ${task.risk || "N/A"}</div>
+    <div>Workload: ${task.workload || "N/A"}</div>
+    <div>Complexity: ${task.complexity || "N/A"}</div>
+    <div>Dependencies: ${
+      Array.isArray(task.dependencies)
+        ? task.dependencies.map(depId => kanban.tasks[depId]?.title || depId).join(", ")
+        : "None"
+    }</div>
+    <div class="task-actions">
+      <button class="edit-btn" onclick="editTask('${taskId}')">ðŸ–‰ Edit</button>
+    </div>
+  `;
+
+  return card;
+}
+
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drop(ev, targetStatus, sprintName) {
+  ev.preventDefault();
+  if (!draggedTaskId || !sprintName || !targetStatus) return;
+
+  for (const status in kanban.sprintlog[sprintName]) {
+    const index = kanban.sprintlog[sprintName][status].indexOf(draggedTaskId);
+    if (index !== -1) {
+      kanban.sprintlog[sprintName][status].splice(index, 1);
+    }
+  }
+
+  if (!kanban.sprintlog[sprintName][targetStatus]) {
+    kanban.sprintlog[sprintName][targetStatus] = [];
+  }
+
+  kanban.sprintlog[sprintName][targetStatus].push(draggedTaskId);
+  draggedTaskId = null;
+  renderBoard();
+  drawTeamMemberReport(); 
+}
+
+function renderBoard() {
+  board.innerHTML = "";
+  const selectedMember = memberSelector.value;
+  const selectedSprint = sprintSelector.value;
+  if (!selectedMember || !selectedSprint) return;
+
+  const statuses = ["new", "todo", "doing", "review", "done"];
+
+  statuses.forEach(status => {
+    const col = document.createElement("div");
+    col.className = `kanban-column ${status}`;
+    const sortValue = sortByPerStatus[status];
+
+    col.innerHTML = `
+      <h2>${status.toUpperCase()}</h2>
+      <label for="sort-${status}">Sort by:</label>
+      <select id="sort-${status}" onchange="onStatusSortChange('${status}', this.value)">
+        <option value="value">Value</option>
+        <option value="workload">Workload</option>
+        <option value="priority">Priority</option>
+      </select>
+    `;
+
+    col.ondragover = allowDrop;
+    col.ondrop = (ev) => drop(ev, status, selectedSprint);
+
+    const taskIds = kanban.sprintlog[selectedSprint][status] || [];
+    taskIds
+      .map(id => kanban.tasks[id])
+      .filter(task => task && task.owner === selectedMember)
+      .sort((a, b) => {
+        switch (sortValue) {
+          case "workload":
+            return a.workload - b.workload;
+          case "priority":
+            return priorityRank(b.priority) - priorityRank(a.priority);
+          case "value":
+          default:
+            return b.value - a.value;
+        }
+      })
+      .forEach(task => {
+        const taskId = Object.keys(kanban.tasks).find(key => kanban.tasks[key] === task);
+        col.appendChild(createTaskCard(task, taskId));
+      });
+
+    board.appendChild(col);
+    setTimeout(() => {
+      const sel = document.getElementById(`sort-${status}`);
+      if (sel) sel.value = sortValue;
+    }, 0);
+  });
+}
+
+
+function drawTeamMemberReport() {
+  const memberId = document.getElementById("team-member-selector").value;
+  const sprintId = document.getElementById("sprint-selector").value;
+  const container = document.getElementById("report-table");
+  container.innerHTML = "";
+
+  if (!memberId || !sprintId || !kobj || !kobj.kanban) {
+    container.innerHTML = "<p>Please select both a team member and a sprint.</p>";
+    return;
+  }
+
+  const kanban = kobj.kanban;
+  const sprintTasks = kanban.sprintlog[sprintId];
+  if (!sprintTasks) {
+    container.innerHTML = "<p>No tasks found for this sprint.</p>";
+    return;
+  }
+
+  const data = new google.visualization.DataTable();
+  data.addColumn('string', 'Title');
+  data.addColumn('string', 'Description');
+  data.addColumn('string', 'Created Date');
+  data.addColumn('number', 'Value');
+  data.addColumn('string', 'Priority');
+  data.addColumn('string', 'Urgency');
+  data.addColumn('string', 'Risk');
+  data.addColumn('string', 'Complexity');
+  data.addColumn('number', 'Workload');
+  data.addColumn('string', 'Dependencies');
+  data.addColumn('string', 'Status');
+
+  let hasRows = false;
+
+  for (const [status, taskIds] of Object.entries(sprintTasks)) {
+    for (const taskId of taskIds) {
+      const task = kanban.tasks[taskId];
+      if (!task || task.owner !== memberId) continue;
+
+      const dependencies = Array.isArray(task.dependencies)
+        ? task.dependencies.map(d => kanban.tasks[d]?.title || d).join(", ")
+        : "";
+
+      data.addRow([
+        task.title || "Untitled",
+        task.description || "N/A",
+        task.createddate || "N/A",
+        typeof task.value === "number" ? task.value : 0,
+        task.priority || "N/A",
+        String(task.urgency || "N/A"),
+        String(task.risk || "N/A"),
+        String(task.complexity || "N/A"),
+        typeof task.workload === "number" ? task.workload : 0,
+        dependencies || "None",
+        status.toUpperCase()
+      ]);
+
+      hasRows = true;
+    }
+  }
+
+  if (!hasRows) {
+    container.innerHTML = "<p>No tasks assigned to this team member for the selected sprint.</p>";
+    return;
+  }
+
+  const table = new google.visualization.Table(container);
+  table.draw(data, {
+    showRowNumber: true,
+    width: '100%',
+    height: 'auto',
+    allowHtml: true,
+    sort: 'enable'
+  });
+}
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  kanban = kobj.kanban;
+
+  memberSelector = document.getElementById("team-member-selector");
+  sprintSelector = document.getElementById("sprint-selector");
+  board = document.getElementById("kanban-board");
+
+  for (const id in kanban.members) {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = kanban.members[id].name;
+    memberSelector.appendChild(opt);
+  }
+
+  for (const sprint in kanban.sprintlog) {
+    const opt = document.createElement("option");
+    opt.value = sprint;
+    opt.textContent = sprint;
+    sprintSelector.appendChild(opt);
+  }
+
+  if (Object.keys(kanban.members).length > 0) {
+      memberSelector.value = Object.keys(kanban.members)[0];
+  }
+  if (Object.keys(kanban.sprintlog).length > 0) {
+      sprintSelector.value = Object.keys(kanban.sprintlog)[0];
+  }
+
+
+  memberSelector.addEventListener("change", () => {
+    renderBoard();
+    drawTeamMemberReport();
+  });
+  sprintSelector.addEventListener("change", () => {
+    renderBoard();
+    drawTeamMemberReport();
+  });
+
+  renderBoard();
+  });
+
+window.editTask = function (taskId) {
+  const task = kobj.kanban.tasks[taskId];
+
+  const newTitle = prompt("Edit Title:", task.title);
+  const newDescription = prompt("Edit Description:", task.description || "");
+  const newCreatedDate = prompt("Edit Created Date (yyyy-mm-dd):", task.createddate || "");
+  const newValue = prompt("Edit Value (number):", task.value);
+  const newPriority = prompt("Edit Priority (High / Medium / Low):", task.priority);
+  const newUrgency = prompt("Edit Urgency:", task.urgency || "");
+  const newRisk = prompt("Edit Risk:", task.risk || "");
+  const newComplexity = prompt("Edit Complexity:", task.complexity || "");
+  const newWorkload = prompt("Edit Workload (number):", task.workload);
+  const newDependencies = prompt("Edit Dependencies (comma-separated IDs):", Array.isArray(task.dependencies) ? task.dependencies.join(", ") : task.dependencies || "");
+
+  if (newTitle !== null) task.title = newTitle;
+  if (newDescription !== null) task.description = newDescription;
+  if (newCreatedDate !== null) task.createddate = newCreatedDate;
+  if (newValue !== null && !isNaN(newValue)) task.value = parseInt(newValue);
+  if (newPriority !== null && ["High", "Medium", "Low"].includes(newPriority)) task.priority = newPriority;
+  if (newUrgency !== null) task.urgency = newUrgency;
+  if (newRisk !== null) task.risk = newRisk;
+  if (newComplexity !== null) task.complexity = newComplexity;
+  if (newWorkload !== null && !isNaN(newWorkload)) task.workload = parseInt(newWorkload);
+  if (newDependencies !== null) {
+    const depList = newDependencies
+      .split(",")
+      .map(d => d.trim())
+      .filter(d => d.length > 0);
+    task.dependencies = depList;
+  }
+  
+  const selectedMember = document.getElementById("team-member-selector").value;
+  if (selectedMember) {
+    task.owner = selectedMember;
+  }
+
+  alert("Task updated!");
+
+ 
+  renderBoard();
+  drawTeamMemberReport();
+};
+
+ </script>
+
+<h2 style="text-align:center; color:#266C99;">איש צוות - דו"ח</h2>
+
+<div id="report-table" style="margin: 40px auto; max-width: 1000px;"></div>
+
+<script type="text/javascript" src="loader.js"></script>
+<script>
+google.charts.load('current', { packages: ['table'] });
+google.charts.setOnLoadCallback(() => {
+    drawTeamMemberReport();
+});
+
+
+</script>
+
+
+<br><br>
+<footer>&copy; 2025 Taskly Team D2</footer>
+</body>
+</html>
